@@ -1,0 +1,48 @@
+```md
+# Expense Tracker API - Project Review
+
+## What Went Well
+- Built a complete CRUD API using FastAPI.
+- Used GET, POST, PUT, and DELETE methods.
+- Implemented path parameters.
+- Used Pydantic models for request validation.
+- Tested all endpoints using the requests library.
+- Added extra features like expense search and total expense calculation.
+
+## Areas for Improvement
+
+### 1. Bug Detection
+- Don't assume success because the endpoint returns a success message.
+- Verify that data is actually modified correctly.
+- Test edge cases and inspect data after operations.
+
+### 2. Naming Consistency
+- Use the same field names throughout the project.
+- Avoid mixing names like `Amount`, `amount`, `expense`, and `title`.
+
+### 3. REST API Conventions
+Prefer:
+
+- `GET /expenses`
+- `GET /expenses/{id}`
+- `POST /expenses`
+- `PUT /expenses/{id}`
+- `DELETE /expenses/{id}`
+
+instead of action-based routes.
+
+### 4. Proper Error Handling
+- Replace string responses with `HTTPException`.
+- Use correct status codes (404, 400, etc.).
+
+## Key Takeaway
+The next level is not learning more FastAPI syntax.
+
+The next level is:
+- Writing reliable code
+- Debugging effectively
+- Following conventions
+- Thinking about edge cases
+
+Current Level: Junior Backend Developer in Training
+```
