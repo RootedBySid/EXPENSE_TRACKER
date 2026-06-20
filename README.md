@@ -15,3 +15,5 @@ Tech Stack:
 - Python
 - FastAPI
 - Pydantic
+- SQLAlchemy
+- Postgresql
