@@ -6,6 +6,6 @@ class post(BaseModel):
     Amount: int  = Field(ge=0)
     
 class user_data(BaseModel):
-    id:int=Field(g=0)
+    # id:int=Field(g=0)
     username:str =Field(min_length=1, max_length=75)
     password :str=Field(min_length=4)

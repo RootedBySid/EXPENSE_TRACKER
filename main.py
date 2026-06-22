@@ -1,13 +1,43 @@
 from fastapi import FastAPI, HTTPException
 import requests
 from Data import Expenses,ID
-from Pydantic_models import post
-from DB_MODELS import expense_input,func
+from Pydantic_models import post,user_data
+from DB_MODELS import expense_input,func,User
 from database import base, engine, SessionLocal
+from passlib.context import  CryptContext
+
 
 app=FastAPI()
 db=SessionLocal()
 base.metadata.create_all(bind=engine)
+
+pwd_context=CryptContext(schemes=["bcrypt"] , deprecated="auto")
+
+
+
+@app.post("/register")
+def register(data:user_data):
+    new_user=User(username=data.username, password =pwd_context.hash(data.password))
+    if new_user not in db.query(User.username).all():
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return {"Status":f"Added user: {new_user.username}"}
+    return {"ERORR":"USER ALREADY EXISTS "}
+    
+def verify_user(pass_entered,pass_stored):
+    return pwd_context.verify(pass_entered,pass_stored)
+    
+@app.post("/login")
+def login(data:user_data):
+    user=db.query(User).filter(User.username==data.username).first()
+    if user:
+        if verify_user(data.password, user.password ):
+            return{"Status":"Logged in"}
+        raise HTTPException(status_code=401,detail="Incorrect password entered")
+    raise HTTPException(status_code=404,detail="User does not exists")
+        
+
 
 @app.get("/expenses")
 def expenses():
