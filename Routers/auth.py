@@ -27,12 +27,14 @@ def login(data:user_data, db=Depends(get_db)):
 
 
 @router.post("/register")
-def register(data:user_data, db=Depends(get_db)):
+def register(data:user_data, db = Depends(get_db)):
     new_user=User(username=data.username, password =pwd_context.hash(data.password))
-    if new_user not in db.query(User.username).all():
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return {"Status":f"Added user: {new_user.username}"}
-    return {"ERORR":"USER ALREADY EXISTS "}
+    existing_user=db.query(User).filter(User.username == user_data.username).first()
+    if existing_user:
+        return {"error":"User already exists"}
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"Status":f"Added user: {new_user.username}"}
+
 #need to be fixedd
