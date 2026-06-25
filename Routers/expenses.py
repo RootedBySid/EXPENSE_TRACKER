@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from Models import post
 from Utils.db_DI import get_db
 from Schemas import expense_input
-
 router = APIRouter(
     prefix="/expenses",
     tags=["Expenses"]
@@ -28,7 +27,7 @@ def search(q:str, db=Depends(get_db) ):
     if exp:
         return exp
         
-    return {"error":"expense not found"}
+    raise HTTPException(status_code=404 ,detail="Expense not found")
     
 @router.post("/")
 def add_expense(data:post, db=Depends(get_db)):
@@ -42,7 +41,7 @@ def get_one_expense(expense_id:int, db=Depends(get_db)):
     single_exp=db.query(expense_input).filter(expense_input.id==expense_id).first()
     if single_exp:
         return single_exp
-    return {"error":"Expense not found"}
+    raise HTTPException(status_code=404 ,detail="Expense not found")
     
 
 @router.put("/{expense_id}")
@@ -54,8 +53,7 @@ def update_expense(expense_id:int ,data:post, db=Depends(get_db)):
         db.commit()
         db.refresh(expenseUD)
         return {"Updated":expenseUD}
-    return {"error":"expense not found"}
-        
+    raise HTTPException(status_code=404 ,detail="Expense not found")
 
 
 @router.delete("/{expense_id}")
@@ -65,4 +63,4 @@ def delete_expense(expense_id:int, db=Depends(get_db)):
         db.delete(expenseDL)
         db.commit()
         return {"status":"expense deleted"}
-    return {"error":"EXpense not found "}
+    raise HTTPException(status_code=404 ,detail="Expense not found")
